@@ -185,8 +185,12 @@ const mainMenuItems = computed(() => [
 			...versionsStore.whatsNewArticles.map((article) => ({
 				id: `whats-new-article-${article.id}`,
 				label: article.title,
-				unread: true,
 				size: 'small',
+				icon: {
+					type: 'emoji',
+					value: '•',
+					color: 'primary',
+				},
 			})),
 			{
 				id: 'full-changelog',

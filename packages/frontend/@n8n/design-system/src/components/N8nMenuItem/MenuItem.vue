@@ -80,9 +80,13 @@ const isItemActive = (item: IMenuItem): boolean => {
 			:popper-class="submenuPopperClass"
 		>
 			<template #title>
-				<N8nIcon v-if="item.unread" :class="$style.icon" icon="circle" color="primary" />
 				<template v-if="item.icon">
-					<div :class="$style.icon">
+					<div
+						:class="{
+							[$style.icon]: true,
+							[$style.primary]: typeof item.icon !== 'string' && item.icon.color === 'primary',
+						}"
+					>
 						<div :class="$style.notificationContainer">
 							<N8nIcon :icon="item.icon" :size="item.customIconSize || 'large'" />
 							<div v-if="item.notification" :class="$style.notification">
@@ -124,7 +128,6 @@ const isItemActive = (item: IMenuItem): boolean => {
 						[$style.disableActiveStyle]: !isItemActive(item),
 						[$style.active]: isItemActive(item),
 						[$style.compact]: compact,
-						[$style.unread]: item.unread,
 						[$style.small]: item.size === 'small',
 					}"
 					data-test-id="menu-item"
@@ -133,7 +136,12 @@ const isItemActive = (item: IMenuItem): boolean => {
 					@click="handleSelect?.(item)"
 				>
 					<template v-if="item.icon">
-						<div :class="$style.icon">
+						<div
+							:class="{
+								[$style.icon]: true,
+								[$style.primary]: typeof item.icon !== 'string' && item.icon.color === 'primary',
+							}"
+						>
 							<div :class="$style.notificationContainer">
 								<N8nIcon
 									v-if="typeof item.icon === 'string' || item.icon.type === 'icon'"
@@ -148,7 +156,6 @@ const isItemActive = (item: IMenuItem): boolean => {
 						</div>
 					</template>
 
-					<N8nIcon v-if="item.unread" :class="[$style.icon]" icon="circle" color="primary" />
 					<span v-if="!compact" :class="$style.label">{{ item.label }}</span>
 					<span v-if="!item.icon && compact" :class="[$style.label, $style.compactLabel]">{{
 						getInitials(item.label)
@@ -220,17 +227,8 @@ const isItemActive = (item: IMenuItem): boolean => {
 		height: var(--sub-menu-item-height) !important;
 		min-width: auto !important;
 		margin: var(--spacing-2xs) 0 !important;
-		user-select: none;
 		padding-left: var(--spacing-l) !important;
-
-		&.unread {
-			.icon {
-				font-size: 0.36em;
-				svg {
-					color: var(--color-primary) !important;
-				}
-			}
-		}
+		user-select: none;
 
 		&:hover {
 			.icon {
@@ -284,7 +282,10 @@ const isItemActive = (item: IMenuItem): boolean => {
 
 	&.small {
 		font-size: var(--font-size-2xs) !important;
-		padding: var(--spacing-3xs) var(--spacing-xs) !important;
+		padding-top: var(--spacing-3xs) !important;
+		padding-bottom: var(--spacing-3xs) !important;
+		padding-left: var(--spacing-s) !important;
+		padding-right: var(--spacing-xs) !important;
 
 		.icon {
 			margin-right: var(--spacing-3xs);
@@ -293,12 +294,23 @@ const isItemActive = (item: IMenuItem): boolean => {
 }
 
 .icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	text-align: center;
+	line-height: 1;
 	min-width: var(--spacing-s);
 	margin-right: var(--spacing-xs);
 
 	svg {
 		margin-right: 0 !important;
+	}
+
+	&.primary {
+		color: var(--color-primary);
+		svg {
+			color: var(--color-primary);
+		}
 	}
 }
 
