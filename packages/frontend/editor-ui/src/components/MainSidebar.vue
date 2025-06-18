@@ -205,7 +205,7 @@ const mainMenuItems = computed(() => [
 			{
 				id: 'version-upgrade-cta',
 				component: VersionUpdateCTA,
-				available: versionsStore.nextVersions.length > 0,
+				available: hasVersionUpdates.value,
 				props: {},
 			},
 		],
@@ -219,7 +219,6 @@ const hasVersionUpdates = computed(
 	() => settingsStore.settings.releaseChannel === 'stable' && versionsStore.hasVersionUpdates,
 );
 
-const nextVersions = computed(() => versionsStore.nextVersions);
 const showUserArea = computed(() => hasPermission(['authenticated']));
 const userIsTrialing = computed(() => cloudPlanStore.userIsTrialing);
 
@@ -481,24 +480,6 @@ onClickOutside(createBtn as Ref<VueInstance>, () => {
 			</template>
 			<template #menuSuffix>
 				<div>
-					<div
-						v-if="hasVersionUpdates"
-						data-test-id="version-updates-panel-button"
-						:class="$style.updates"
-						@click="openUpdatesPanel"
-					>
-						<div :class="$style.giftContainer">
-							<GiftNotificationIcon />
-						</div>
-						<N8nText
-							:class="{ ['ml-xs']: true, [$style.expanded]: fullyExpanded }"
-							color="text-base"
-						>
-							{{ nextVersions.length > 99 ? '99+' : nextVersions.length }} update{{
-								nextVersions.length > 1 ? 's' : ''
-							}}
-						</N8nText>
-					</div>
 					<MainSidebarSourceControl :is-collapsed="isCollapsed" />
 				</div>
 			</template>
